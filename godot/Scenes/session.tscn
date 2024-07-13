@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://dfbbqya2a28kt"]
+
+[ext_resource type="Script" path="res://Scripts/Session.gd" id="1_oyqtq"]
+
+[node name="Session" type="Node"]
+script = ExtResource("1_oyqtq")
+
+[node name="LongHTTPRequest" type="HTTPRequest" parent="."]
