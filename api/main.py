@@ -119,7 +119,7 @@ def update_client_test(session_id: str):
     current_session = sessions[session_id]
     current_session.update_event.set()
 
-    return {'Test server update.'}
+    return {'Client updated.'}
 
 
 @app.get("/get-all-sessions")

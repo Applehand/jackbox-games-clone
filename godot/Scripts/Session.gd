@@ -9,7 +9,6 @@ func _ready() -> void:
 	id = gen_session_id()
 	$LongHTTPRequest.request_completed.connect(long_poll_server_results)
 
-
 func gen_session_id() -> String:
 	var id = ""
 	var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
@@ -31,12 +30,16 @@ func _on_new_session_created(result, response_code, headers, body):
 
 func long_poll_server_for_session_updates():
 	var url = "http://127.0.0.1:8000/poll-server-for-updates/" + id
-	$LongHTTPRequest.request(url, [], HTTPClient.METHOD_GET)
-	print("Long poll beginning.")
+	if is_long_polling:
+		$LongHTTPRequest.request(url, [], HTTPClient.METHOD_GET)
+		print("Starting long poll.")
+	else:
+		$LongHTTPRequest.cancel_request()
+		print("Ending long poll.")
 
 func long_poll_server_results(result, response_code, headers, body):
 	var server_updates = JSON.parse_string(body.get_string_from_utf8())
-	if response_code == 200 and is_long_polling:
+	if response_code == 200:
 		long_poll_server_for_session_updates()
 	else:
-		print('Long polling has ended.')
+		print('Issue with long poll.')

@@ -10,16 +10,13 @@ var packed_session: PackedScene = preload("res://Scenes/session.tscn")
 @onready var end_session_button: Button = $Control/CenterContainer/VBoxContainer/CenterContainer/HBoxContainer/EndSessionButton
 @onready var create_session_button: Button = $Control/CenterContainer/VBoxContainer/CenterContainer/HBoxContainer/CreateSessionButton
 
-
 func _ready() -> void:
-	create_session_button.connect("pressed", prep_new_session)
-	if not end_session_button.pressed.is_connected(end_session):
-		end_session_button.connect("pressed", end_session)
-	if not start_long_polling_button.pressed.is_connected(start_long_polling):
-		start_long_polling_button.connect("pressed", start_long_polling)
-		end_long_polling_button.connect("pressed", end_long_polling)
+	create_session_button.connect("pressed", create_new_session)
+	end_session_button.connect("pressed", end_session)
+	start_long_polling_button.connect("pressed", start_long_polling)
+	end_long_polling_button.connect("pressed", end_long_polling)
 
-func prep_new_session():
+func create_new_session():
 	if session:
 		print("A session already exists.")
 		return
@@ -34,13 +31,17 @@ func start_long_polling():
 		session.is_long_polling = true
 		session.long_poll_server_for_session_updates()
 	else:
-		print("No session exists to long poll data for.")
+		print("No session exists to start long polling on.")
 
 func end_long_polling():
 	if session:
-		session.is_long_polling = false
+		if not session.is_long_polling:
+			print('Long polling is not active.')
+		elif session:
+			session.is_long_polling = false
+			session.long_poll_server_for_session_updates()
 	else:
-		print("No session exists to end long polling for.")
+		print("No session exists to end long polling on.")
 
 func end_session():
 	if session:
