@@ -1,18 +1,14 @@
 # Project Colony Party
 
-td
-
-## Table of Contents
-
-td
-
 ## Introduction
 
-td
+A couch co-op game that involves deception and role play in a sci-fi setting.
 
 ## Features
 
-td
+- Adversarial gameplay for 2-4 players.
+- Round-based structure with short game sessions.
+- Players use a web page to issue actions and must complete objectives while maintaining anonymity.
 
 ## Installation
 
@@ -37,7 +33,8 @@ On Windows, use:
 python -m venv venv
 venv\Scripts\activate
 ```
-You should see (venv) in your terminal.\
+You should see (venv) in your terminal upon activation.
+
 Install the required server libraries with:
 ```
 pip install -r requirements.txt
@@ -48,14 +45,14 @@ fastapi dev main.py
 ```
 ### 3. Set Up the Frontend
 
-Make sure Node is installed and run this to serve the frontend:
+Make sure Node is installed and run this to serve the frontend to your browser:
 ```
 cd frontend
 npx serve
 ```
 ### 4. Set Up the Game Engine (Godot)
 
-Make sure you have Godot installed and do this to edit and run the Game:
+Make sure you have Godot installed. To edit and run the Game, do:
 - Open Godot Launcher
 - Click on "Import"
 - Select the project.godot file.
@@ -63,5 +60,5 @@ Make sure you have Godot installed and do this to edit and run the Game:
 
 ## Usage
 
-td
+To begin, run the Godot project and create a session. Open the web frontend to enter the session ID and a name, then click the "Join Session" button. Follow the prompts to participate in the game.
 
