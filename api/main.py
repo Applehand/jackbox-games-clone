@@ -1,10 +1,22 @@
+import random
+
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from typing import Optional, List, Dict
 from statemachine import StateMachine, State
 import asyncio
 
 app = FastAPI()
+
+origins = ["http://localhost:3000"]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 class PlayerState(StateMachine):
@@ -43,11 +55,28 @@ def create_character_traits():
     return [""]
 
 
-class Player(BaseModel):
-    id: str
+def assign_character_role():
+    return ""
+
+
+def gen_player_id():
+    chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+    player_id = ""
+    for i in range(0, 3):
+        player_id += random.choice(chars)
+    return player_id
+
+
+class PlayerRequest(BaseModel):
     session_id: str
     name: str
-    role: str
+
+
+class Player(BaseModel):
+    id: str = Field(default_factory=gen_player_id)
+    session_id: str
+    name: str
+    role: str = Field(default_factory=assign_character_role)
     traits: List[str] = Field(default_factory=create_character_traits)
     state: PlayerState = Field(default_factory=PlayerState)
 
@@ -92,6 +121,7 @@ class Session(BaseModel):
     def model_dump(self, **kwargs):
         data = super().model_dump(**kwargs)
         data['state'] = serialize_state(self.state)
+        data['players'] = [player.model_dump() for player in self.players]
 
         return data
 
@@ -122,8 +152,9 @@ def update_client_test(session_id: str):
     return {'Client updated.'}
 
 
-@app.get("/get-all-sessions")
-def get_all_sessions():
+@app.get("/get-all-session-data")
+def get_all_session_data():
+
     return [session.model_dump() for session in sessions.values()]
 
 
@@ -169,11 +200,12 @@ def end_game(session_id: str):
     return {f"Game {current_session.games[-1].id} ended."}
 
 
-@app.post("/add-player-to-session/{session_id}")
-def add_player_to_session(session_id: str):
-    current_session = sessions[session_id]
+@app.post("/add-player-to-session/")
+async def add_player_to_session(player_req: PlayerRequest):
+    player = Player(session_id=player_req.session_id, name=player_req.name)
+    sessions[player_req.session_id].players.append(player)
 
-    return {""}
+    return {f"Added {player.name} to Session {player_req.session_id}"}
 
 
 @app.post("/remove-player-from-session/{session_id}")

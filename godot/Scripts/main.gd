@@ -53,13 +53,3 @@ func end_session():
 		session = null
 	else:
 		print("No session exists to end.")
-
-func test_server_update(session_id):
-	var req = HTTPRequest.new()
-	add_child(req)
-	var url = "http://127.0.0.1:8000/update-client-test/" + session_id
-	req.request_completed.connect(test_update_results)
-	req.request(url, [], HTTPClient.METHOD_GET)
-
-func test_update_results(result, response_code, headers, body):
-	var test_response = JSON.parse_string(body.get_string_from_utf8())

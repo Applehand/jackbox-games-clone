@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/picnic" />
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/alpinejs-requests@1.x.x/dist/plugin.min.js"
+    ></script>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"
+    ></script>
+    <link rel="stylesheet" href="styles.css" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Colony Party | Frontend</title>
+  </head>
+  <body>
+    <div
+      x-data="{
+        session_id: '',
+        name: '',
+        sendRequest() {
+          this.$post({
+            route: 'http://127.0.0.1:8000/add-player-to-session/',
+            body: JSON.stringify({ session_id: this.session_id, name: this.name }),
+            headers: {'Content-Type': 'application/json'}
+          });
+        },
+        async onResp() {
+            const response = this.$event.detail.response;
+            const success = response.status;
+            const result = await response.json();
+            if (success == 200) {
+                console.log('Successfully added player.');
+                this.$refs.resultText.textContent = result;
+            } else {
+                console.log('Unable to add player.');
+                this.$refs.resultText.textContent = 'Could not join session.'
+            }
+        }
+      }"
+    >
+      <input x-model="session_id" type="text" placeholder="Session ID" />
+      <input x-model="name" type="text" placeholder="Player Name" />
+      <button
+        @click="sendRequest"
+        :disabled="session_id.length !== 4 || name.length <= 1"
+        @post="onResp"
+      >
+        Join Session
+      </button>
+      <p x-ref="resultText"></p>
+    </div>
+  </body>
+</html>
