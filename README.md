@@ -23,23 +23,18 @@ Make sure [git](https://git-scm.com/) is installed, and run this to clone these 
   ```
 ### 2. Set Up the Backend
 
-Make sure Python is installed, and run this to create and activate the virtual environment:
+- Make sure Python is installed, and run this to create and activate the virtual environment (Windows use `venv\Scripts\activate`):
 ```
 python -m venv venv
 source venv/bin/activate
 ```
-On Windows, use:
-```
-python -m venv venv
-venv\Scripts\activate
-```
-You should see (venv) in your terminal upon activation.
 
-Install the required server libraries with:
+
+- Install the required server libraries with:
 ```
 pip install -r requirements.txt
 ```
-Start the server:
+- Start the server:
 ```
 fastapi dev main.py
 ```
